@@ -36,7 +36,7 @@ struct ContentView: View {
 //            withAnimation{
 //                Apply animation (with parameters) to the states listed here
             animateViewsIn = true
-//            playaudio()
+            playaudio()
 //            }
         }
     }
@@ -52,4 +52,9 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .preferredColorScheme(.dark)
+    /* As we are using the Game environment,
+     we have to set it in the Preview because it will use the SelectBooks View
+     */
+        .environment(Game())
+
 }

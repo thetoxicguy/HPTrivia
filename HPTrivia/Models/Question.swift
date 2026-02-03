@@ -8,8 +8,8 @@
 struct Question: Decodable {
     let id: Int
     let question: String
-    let correct_answer: String
-    let incorrect_answers: [String]
-    let book: String
+    let answer: String
+    let wrong: [String]
+    let book: Int
     let hint: String
 }

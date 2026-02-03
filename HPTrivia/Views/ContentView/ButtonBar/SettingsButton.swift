@@ -29,6 +29,9 @@ struct SettingsButton: View {
             }
         }
         .animation(.easeInOut(duration: 0.7).delay(3.4), value: animateViewsIn)
+        .sheet(isPresented: $showSettings) {
+            SelectBooks()
+        }
     }
 }
 
