@@ -12,7 +12,7 @@ struct SelectBooks: View {
 //    Game.self is the type of environment model to set the variable
     @Environment(Game.self) var game
     
-    @State private var showTempAlert = false
+    private var store = Store()
     
     var activeBooks: Bool {
         for book in game.bookQuestions.books {
@@ -38,10 +38,13 @@ struct SelectBooks: View {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(), GridItem()]) {
                         ForEach(game.bookQuestions.books) { book in
-                            if book.status == .active {
+                            if book.status == .active || (book.status == .locked && store.purchased.contains(book.image)) {
                                 ActiveBook(book: book)
                                     .onTapGesture {
                                         game.bookQuestions.changeStatus(of: book.id, to: .inactive)
+                                    }
+                                    .task {
+                                        game.bookQuestions.changeStatus(of: book.id, to: .active) 
                                     }
                                 }
                             else if book.status == .inactive {
@@ -52,8 +55,10 @@ struct SelectBooks: View {
                             } else {
                                 LockedBook(book: book)
                                 .onTapGesture {
-                                    showTempAlert.toggle()
-                                    game.bookQuestions.changeStatus(of: book.id, to: .active)
+                                    let product = store.products[book.id-4]
+                                    Task {
+                                        await store.purchase(product)
+                                    }
                                 }
                             }
                         }
@@ -64,6 +69,7 @@ struct SelectBooks: View {
                         .multilineTextAlignment(.center)
                 }
                 Button("Done") {
+                    game.bookQuestions.saveStatus()
                     dismiss()
                 }
                 .font(.largeTitle)
@@ -75,9 +81,11 @@ struct SelectBooks: View {
             }
             .foregroundStyle(.black)
         }
-        .interactiveDismissDisabled(!activeBooks)
-        .alert("You purchased a new question pack!", isPresented: $showTempAlert) {
-            
+//        For storing the status to persist it is complex to set it on dismissal
+//        .interactiveDismissDisabled(!activeBooks)
+        .interactiveDismissDisabled() // Default to true
+        .task {
+            await store.loadProducts()
         }
     }
 }

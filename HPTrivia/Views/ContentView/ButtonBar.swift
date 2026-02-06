@@ -9,7 +9,8 @@ import SwiftUI
 
 struct ButtonBar: View {
     @Binding var animateViewsIn: Bool
-    
+    @Binding var playGame: Bool
+
     let geo: GeometryProxy
 
     var body: some View {
@@ -20,7 +21,7 @@ struct ButtonBar: View {
                 geo: geo
             )
             Spacer()
-            PlayButton(animateViewsIn: $animateViewsIn, geo: geo)
+            PlayButton(animateViewsIn: $animateViewsIn, playGame: $playGame, geo: geo)
             Spacer()
             SettingsButton(animateViewsIn: $animateViewsIn, geo: geo)
             
@@ -32,6 +33,6 @@ struct ButtonBar: View {
 
 #Preview {
     GeometryReader { geo in
-        ButtonBar(animateViewsIn: .constant(true), geo: geo)
+        ButtonBar(animateViewsIn: .constant(true), playGame: .constant(false), geo: geo)
     }
 }

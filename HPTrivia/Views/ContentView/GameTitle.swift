@@ -16,10 +16,11 @@ struct GameTitle: View {
             //                    Animate text, step 4 (Seet the animation based on the state)
             if animateViewsIn {
                 VStack {
-                    Image(systemName: "bolt.fill")
+                    Image(systemName: "wand.and.sparkles")
                         .imageScale(.large)
                         .font(.largeTitle)
-                    Text("HP")
+                        .padding()
+                    Text("Harry Potter")
                         .font(.custom("PartyLetPlain", size: 70))
                         .padding(.bottom, -50)
                     Text("Trivia")

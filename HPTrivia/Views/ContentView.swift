@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var audioPlayer: AVAudioPlayer!
     //                    Animate text, step 1 (Declare the state)
     @State private var animateViewsIn = false
+    @State private var playGame = false
     
     var body: some View {
         GeometryReader { geo in
@@ -24,7 +25,11 @@ struct ContentView: View {
                     RecentScores(animateViewsIn: $animateViewsIn)
                     
                     Spacer()
-                    ButtonBar(animateViewsIn: $animateViewsIn, geo: geo)
+                    ButtonBar(
+                        animateViewsIn: $animateViewsIn,
+                        playGame: $playGame,
+                        geo: geo
+                    )
                     Spacer()
                 }
             }
@@ -36,11 +41,20 @@ struct ContentView: View {
 //            withAnimation{
 //                Apply animation (with parameters) to the states listed here
             animateViewsIn = true
-            playaudio()
+            playAudio()
 //            }
         }
+        .fullScreenCover(isPresented: $playGame) {
+            Gameplay()
+                .onAppear {
+                    audioPlayer.setVolume(0, fadeDuration: 2)
+                }
+                .onDisappear {
+                    audioPlayer.setVolume(1, fadeDuration: 3)
+                }
+        }
     }
-    private func playaudio() {
+    private func playAudio() {
         let sound = Bundle.main.path(forResource: "magic-in-the-air", ofType: "mp3")
         audioPlayer = try! AVAudioPlayer(contentsOf: URL(filePath: sound!))
         audioPlayer.numberOfLoops = -1
